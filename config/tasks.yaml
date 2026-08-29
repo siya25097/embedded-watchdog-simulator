@@ -1,0 +1,13 @@
+tasks:
+  - id: task-A
+    period: 1
+    timeout_ms: 3000
+    missed_heartbeat_threshold: 2
+  - id: task-B
+    period: 2
+    timeout_ms: 5000
+    missed_heartbeat_threshold: 2
+  - id: task-C
+    period: 1.5
+    timeout_ms: 3000
+    missed_heartbeat_threshold: 2
