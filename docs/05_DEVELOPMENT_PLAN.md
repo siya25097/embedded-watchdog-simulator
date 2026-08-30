@@ -62,9 +62,9 @@ watchdog-simulator/
 - **Definition of Done:** Running the script shows 3 tasks printing heartbeats at their configured periods, no crashes over a 2-minute run.
 
 ### Milestone 2 — Watchdog & Status Classification (FR-6 to FR-12) (1–2 days)
-- [ ] Implement `Watchdog` thread: polls registry on its own interval, classifies each task HEALTHY/LATE/STALLED per BR-3 and E-5 (jitter buffer)
-- [ ] Log every STALLED transition (FR-11)
-- [ ] Write `tests/test_watchdog.py`: simulate a task that stops heartbeating (mock/manual) and assert it's flagged STALLED within expected time (per SRS §11 Given/When/Then format)
+- [x] Implement `Watchdog` thread: polls registry on its own interval, classifies each task HEALTHY/LATE/STALLED per BR-3 and E-5 (jitter buffer)
+- [x] Log every STALLED transition (FR-11)
+- [x] Write `tests/test_watchdog.py`: simulate a task that stops heartbeating (mock/manual) and assert it's flagged STALLED within expected time (per SRS §11 Given/When/Then format)
 - **Dependencies:** Milestone 1.
 - **Definition of Done:** Automated test passes; manually killing a task thread results in correct STALLED detection within the documented latency formula (SRS P-3).
 

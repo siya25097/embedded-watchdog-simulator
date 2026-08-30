@@ -1,2 +1,2 @@
 # src package for watchdog simulator
-__all__ = ["task", "registry"]
+__all__ = ["task", "registry", "watchdog"]

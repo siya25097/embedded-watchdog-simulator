@@ -7,6 +7,7 @@ from src.registry import Registry
 from src.task import Task
 
 
+
 def load_tasks(path="config/tasks.yaml"):
     """Load and validate tasks config.
 
