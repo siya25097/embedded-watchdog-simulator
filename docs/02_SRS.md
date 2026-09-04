@@ -1,7 +1,7 @@
 # Software Requirements Specification (SRS)
 ## Embedded Watchdog & Fault Recovery Simulator
 
-**Version:** 0.1 (living document)
+**Version:** 0.1 (implemented MVP; official project reference)
 **Based on:** PRD v0.1
 
 ---
@@ -75,7 +75,7 @@ Each requirement has an ID for traceability into the Development Plan and testin
 ### 3.7 Logging & Persistence
 
 - **FR-27:** All events (heartbeats optionally, stalls, faults, recoveries) shall be written to an application log (console and/or file) with timestamps.
-- **FR-28 (stretch):** Event history shall be persisted to a local file (JSON/SQLite) so a session's history can be reviewed after the process ends.
+- **FR-28 (stretch):** Event history is persisted to the gitignored local `events.jsonl` file by the dashboard; SQLite remains future work.
 
 ---
 

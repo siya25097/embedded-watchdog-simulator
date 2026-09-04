@@ -1,7 +1,7 @@
 # System Architecture Document
 ## Embedded Watchdog & Fault Recovery Simulator
 
-**Version:** 0.1 (living document)
+**Version:** 0.1 (implemented MVP; official project reference)
 **Based on:** PRD v0.1, SRS v0.1
 
 ---
@@ -23,7 +23,7 @@ Keep it practical, not over-engineered:
 | Alternative concurrency model | `asyncio` (optional v2 exploration) | Worth trying as a "Phase 2" rewrite to demonstrate async understanding too, but don't start here — threading is more intuitive for modeling independent periodic tasks with real wall-clock timing |
 | Watchdog | Plain Python thread with a polling loop | Simplicity > cleverness; a watchdog is conceptually just "check state, act on state" on a timer |
 | State storage (runtime) | In-memory Python objects (`dataclasses` + a thread-safe registry, e.g., using `threading.Lock` or a `queue.Queue` for events) | No need for a database for MVP; keep it simple |
-| Event log persistence (stretch) | SQLite (via `sqlite3`, stdlib) or JSON lines file | SQLite is a natural "next step up" from in-memory without needing a server; you already know SQL |
+| Event log persistence | JSON lines file via the standard library; SQLite remains future work | JSONL preserves the append-only event model without adding a database dependency |
 | Config | JSON or YAML file (`pyyaml` if YAML) | Simple, human-editable, matches FR-5 |
 | Dashboard | **Streamlit** (recommended) | Fastest path to a real-time, auto-refreshing Python dashboard with almost no frontend code — ideal for a solo learning project on a deadline. Alternative: **Dash (Plotly)** if you want more layout control, or **Tkinter** if you want a desktop-native app with zero web dependency (slightly more manual "real-time refresh" plumbing) |
 | Testing | `pytest` | Standard, matches SRS §11 acceptance-criteria format |
@@ -85,7 +85,7 @@ Keep it practical, not over-engineered:
 - **Watchdog** — its own thread; on a fixed poll interval, evaluates every task's last-heartbeat age against its timeout/threshold, updates status, and calls the Recovery Manager when a task crosses into `STALLED`.
 - **Fault Injector** — a thin interface (CLI command and/or Streamlit button) that flips a flag or sends a signal a task thread checks, or directly manipulates a task thread to simulate hang/comm-failure.
 - **Recovery Manager** — receives "this task is stalled" from the watchdog, asks the Task Manager to restart that task's thread, updates recovery counters, and writes a `RECOVERY_ATTEMPTED`/`SUCCEEDED`/`FAILED` event.
-- **Event Logger** — append-only event store; in-memory `list` for MVP, with an optional writer to a JSON-lines file or SQLite table for persistence (stretch).
+- **Event Logger** — append-only thread-safe event store; the dashboard also writes JSON Lines to `events.jsonl` for local persistence.
 - **Streamlit Dashboard** — a separate process/script that reads from the same shared state (see §5 on process model) and renders it, refreshing on an interval using `st.rerun()`/fragments or `streamlit-autorefresh`.
 
 ---

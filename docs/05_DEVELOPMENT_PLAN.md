@@ -1,7 +1,7 @@
 # Development Plan
 ## Embedded Watchdog & Fault Recovery Simulator
 
-**Version:** 0.1 (living document — check items off as you go)
+**Version:** 0.1 (implemented MVP; official project reference)
 **Based on:** PRD, SRS, Architecture, UI/UX docs v0.1
 
 ---
@@ -94,6 +94,7 @@ watchdog-simulator/
 ### Milestone 6 — Streamlit Dashboard (FR-22 to FR-26) (2–3 days)
 - [x] **Prototype the threading+Streamlit integration FIRST** (Architecture §5 risk) — get one task's live status rendering and refreshing before building the full layout
 - [x] Build Task Status Grid (colored badges, last-heartbeat, recovery count)
+- [x] Support five configured tasks and runtime timing edits for demonstration
 - [x] Build Fault Injection Panel wired to the same `FaultInjector` used by tests
 - [x] Build Event Log table (reverse-chronological)
 - [x] Apply color/typography/spacing choices from the UI/UX doc
@@ -110,9 +111,10 @@ watchdog-simulator/
 - **Definition of Done:** All PRD §11 and SRS §11 checklist items pass.
 
 ### Milestone 8 — Documentation & Demo Packaging (1 day)
-- [ ] Finalize README: problem statement (from PRD §1), architecture diagram (from Architecture §3), the "mapping to real firmware concepts" table (Architecture §13), setup/run instructions
+- [x] Finalize README: problem statement (from PRD §1), architecture diagram (from Architecture §3), the "mapping to real firmware concepts" table (Architecture §13), setup/run instructions
+- [x] Add optional JSON-lines event persistence for the dashboard
 - [ ] Record a short demo GIF/video showing the fault-injection → detection → recovery loop
-- [ ] Update all 5 living docs to reflect what was actually built (close the loop — note any deviations from the original plan and why, which is itself a good interview talking point)
+- [x] Update all 5 living docs to reflect what was actually built (close the loop — note any deviations from the original plan and why, which is itself a good interview talking point)
 - [ ] Push final version to GitHub with a clean commit history
 - **Dependencies:** Milestone 7.
 - **Definition of Done:** A stranger can clone the repo, follow the README, and run a working demo within 5 minutes.

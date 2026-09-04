@@ -3,7 +3,7 @@
 
 **Version:** 0.1 (living document — update as you build)
 **Owner:** Khushi
-**Status:** Draft / Pre-development
+**Status:** Implemented MVP / official project reference
 
 ---
 

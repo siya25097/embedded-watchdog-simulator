@@ -1,7 +1,7 @@
 # UI/UX Document
 ## Embedded Watchdog & Fault Recovery Simulator — Dashboard
 
-**Version:** 0.1 (living document)
+**Version:** 0.1 (implemented MVP; official project reference)
 **Based on:** PRD v0.1, SRS v0.1, Architecture v0.1
 
 ---

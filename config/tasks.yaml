@@ -11,3 +11,11 @@ tasks:
     period: 1.5
     timeout_ms: 3000
     missed_heartbeat_threshold: 2
+  - id: task-D
+    period: 2.5
+    timeout_ms: 6000
+    missed_heartbeat_threshold: 2
+  - id: task-E
+    period: 3
+    timeout_ms: 7000
+    missed_heartbeat_threshold: 2
