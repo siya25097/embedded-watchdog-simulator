@@ -10,7 +10,7 @@ class RecoveryManager:
         self.fault_injector = fault_injector
         self.watchdog = watchdog
         self.event_logger = event_logger
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
         self._counts = {}
         self._last_recovery = {}
         self.events = []
@@ -40,7 +40,11 @@ class RecoveryManager:
                 "event": "RECOVERY_SUCCEEDED",
             })
             if self.event_logger:
-                self.event_logger.log("RECOVERY_SUCCEEDED", task_id)
+                self.event_logger.log(
+                    "RECOVERY_SUCCEEDED",
+                    task_id,
+                    {"recovery_count": self.recovery_count(task_id)},
+                )
             return True
 
     def recover(self, task_id):
@@ -71,7 +75,11 @@ class RecoveryManager:
                     "event": "RECOVERY_STARTED",
                 })
                 if self.event_logger:
-                    self.event_logger.log("RECOVERY_STARTED", task_id)
+                    self.event_logger.log(
+                        "RECOVERY_STARTED",
+                        task_id,
+                        {"recovery_count": self.recovery_count(task_id)},
+                    )
             return True
         except Exception as exc:
             with self._lock:

@@ -78,6 +78,7 @@ class Watchdog(threading.Thread):
             self.event_logger.log(
                 "STALL_DETECTED",
                 task_id,
+                {"status": "STALLED"},
                 timestamp=event["timestamp"],
             )
         print(f"[WATCHDOG] {task_id} transitioned to STALLED at {event['timestamp']:.3f}")
@@ -133,8 +134,10 @@ class Watchdog(threading.Thread):
                 self.on_healthy(task_id)
             if new_state == "STALLED" and previous != "STALLED":
                 self._log_stalled_transition(task_id)
-                if self.on_stalled is not None and self.on_stalled(task_id):
+                if self.on_stalled is not None:
                     self.set_status(task_id, "RECOVERING")
+                    if not self.on_stalled(task_id):
+                        self.set_status(task_id, "STALLED")
 
     def stop(self):
         self._stop_event.set()

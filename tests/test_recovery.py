@@ -69,3 +69,22 @@ def test_recovery_success_requires_an_active_confirmation():
     recovery = RecoveryManager(manager)
 
     assert recovery.confirm_recovery("task-a") is False
+
+
+def test_confirm_recovery_records_success_without_deadlocking():
+    registry = Registry()
+    manager = TaskManager(
+        registry,
+        {"task-a": {"period": 0.05, "timeout_ms": 180, "missed_heartbeat_threshold": 2}},
+    )
+    recovery = RecoveryManager(manager)
+
+    with recovery._lock:
+        recovery._counts["task-a"] = 1
+        recovery._awaiting_confirmation.add("task-a")
+
+    assert recovery.confirm_recovery("task-a") is True
+    assert any(
+        event["event"] == "RECOVERY_SUCCEEDED"
+        for event in recovery.recovery_events()
+    )

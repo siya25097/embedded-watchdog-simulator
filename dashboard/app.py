@@ -116,10 +116,14 @@ def render_controls(runtime):
     with inject:
         if st.button("Inject Fault", disabled=active_fault, use_container_width=True):
             runtime["fault_injector"].inject_fault(task_id, fault_type)
+            st.session_state.dashboard_notice = (
+                f"{fault_type.replace('_', ' ').title()} injected into {task_id}."
+            )
             st.rerun()
     with clear:
         if st.button("Clear Fault", disabled=not active_fault, use_container_width=True):
             runtime["fault_injector"].clear_fault(task_id)
+            st.session_state.dashboard_notice = f"Fault cleared for {task_id}."
             st.rerun()
     if active_fault:
         st.warning(f"{task_id} has an active fault.")
@@ -161,12 +165,28 @@ def render_timing_controls(runtime):
     if st.sidebar.button("Apply timing changes", use_container_width=True):
         stop_runtime(runtime)
         st.session_state.runtime = start_runtime(list(edited.values()))
+        st.session_state.dashboard_notice = (
+            "Timing changes applied; all tasks were restarted."
+        )
         st.rerun()
 
 
 def render_event_log(runtime):
     st.header("Event Log")
-    events = list(reversed(runtime["event_logger"].chronological()))
+    event_types = sorted(
+        {event["event_type"] for event in runtime["event_logger"].events()}
+    )
+    selected_types = st.multiselect(
+        "Show event types",
+        event_types,
+        default=[event_type for event_type in event_types if event_type != "HEARTBEAT"],
+    )
+    events = [
+        event
+        for event in runtime["event_logger"].chronological()
+        if event["event_type"] in selected_types
+    ]
+    events = list(reversed(events))
     if not events:
         st.info("No events yet — inject a fault to see the watchdog in action.")
         return
@@ -221,6 +241,8 @@ def main():
             st.stop()
 
     runtime = st.session_state.runtime
+    if notice := st.session_state.pop("dashboard_notice", None):
+        st.success(notice)
     render_timing_controls(runtime)
     statuses = runtime["watchdog"].statuses()
     healthy = sum(status == "HEALTHY" for status in statuses.values())
