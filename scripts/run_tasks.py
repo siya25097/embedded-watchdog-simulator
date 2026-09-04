@@ -22,11 +22,18 @@ def load_tasks(path="config/tasks.yaml"):
 
     raw_tasks = cfg.get("tasks", [])
     validated = []
+    seen_ids = set()
     for idx, t in enumerate(raw_tasks):
         if not isinstance(t, dict):
             raise ValueError(f"task entry at index {idx} must be a mapping")
         if "id" not in t:
             raise ValueError(f"task entry at index {idx} missing 'id'")
+        task_id = t["id"]
+        if not isinstance(task_id, str) or not task_id.strip():
+            raise ValueError(f"task entry at index {idx} has invalid 'id'")
+        if task_id in seen_ids:
+            raise ValueError(f"duplicate task id: '{task_id}'")
+        seen_ids.add(task_id)
         if "period" not in t:
             raise ValueError(f"task '{t.get('id')}' missing 'period'")
         try:
@@ -57,13 +64,13 @@ def load_tasks(path="config/tasks.yaml"):
         else:
             try:
                 missed = int(missed)
-                if missed < 0:
+                if missed < 1:
                     raise ValueError()
             except Exception:
                 raise ValueError(f"task '{t.get('id')}' has invalid 'missed_heartbeat_threshold': {t.get('missed_heartbeat_threshold')}")
 
         validated.append({
-            "id": t["id"],
+            "id": task_id,
             "period": period,
             "timeout_ms": timeout_ms,
             "missed_heartbeat_threshold": missed,
@@ -86,7 +93,8 @@ def main():
         print("Shutting down tasks...")
         for tt in tasks:
             tt.stop()
-        time.sleep(0.2)
+        for tt in tasks:
+            tt.join(timeout=2)
         sys.exit(0)
 
     signal.signal(signal.SIGINT, handle)

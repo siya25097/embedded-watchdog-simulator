@@ -102,10 +102,10 @@ watchdog-simulator/
 - **Definition of Done:** Full demo loop (UI/UX §2 User Journey, steps 1–6) works end-to-end through the dashboard, refreshing live without manual reload.
 
 ### Milestone 7 — Testing, Polish & Bug Fixing (1–2 days)
-- [ ] Run the full acceptance criteria checklist from the PRD (§11) and SRS (§11 Given/When/Then cases) against the finished build
-- [ ] 10-minute continuous soak test with repeated fault injections (PRD acceptance criterion)
-- [ ] Fix any race conditions found in the shared registry (double-check lock usage)
-- [ ] Clean up code: consistent naming, docstrings, remove dead/experimental code from prototyping
+- [x] Run the full acceptance criteria checklist from the PRD (§11) and SRS (§11 Given/When/Then cases) against the finished build
+- [x] 10-minute continuous soak test with repeated fault injections (PRD acceptance criterion)
+- [x] Fix any race conditions found in the shared registry (double-check lock usage)
+- [x] Clean up code: consistent naming, docstrings, remove dead/experimental code from prototyping
 - **Dependencies:** Milestone 6.
 - **Definition of Done:** All PRD §11 and SRS §11 checklist items pass.
 

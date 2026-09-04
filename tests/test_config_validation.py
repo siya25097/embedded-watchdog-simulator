@@ -65,3 +65,35 @@ tasks:
 
     with pytest.raises(ValueError, match="missed_heartbeat_threshold"):
         load_tasks(path)
+
+
+def test_zero_missed_heartbeat_threshold(tmp_path):
+    config = """
+tasks:
+  - id: task-A
+    period: 1
+    timeout_ms: 3000
+    missed_heartbeat_threshold: 0
+"""
+
+    path = write_config(tmp_path, config)
+
+    with pytest.raises(ValueError, match="missed_heartbeat_threshold"):
+        load_tasks(path)
+
+
+def test_duplicate_task_ids(tmp_path):
+    config = """
+tasks:
+  - id: task-A
+    period: 1
+    timeout_ms: 3000
+  - id: task-A
+    period: 1
+    timeout_ms: 3000
+"""
+
+    path = write_config(tmp_path, config)
+
+    with pytest.raises(ValueError, match="duplicate task id"):
+        load_tasks(path)
