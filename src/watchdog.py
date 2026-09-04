@@ -19,7 +19,7 @@ class Watchdog(threading.Thread):
         self.tasks_config = self._normalize_tasks(tasks_config or {})
         self.poll_interval = float(poll_interval)
         self.jitter_buffer = float(jitter_buffer)
-        self._stop = threading.Event()
+        self._stop_event = threading.Event()
         self._lock = threading.Lock()
         self._statuses = {}
         self._stalled_events = []
@@ -104,9 +104,9 @@ class Watchdog(threading.Thread):
                 self._log_stalled_transition(task_id)
 
     def stop(self):
-        self._stop.set()
+        self._stop_event.set()
 
     def run(self):
-        while not self._stop.is_set():
+        while not self._stop_event.is_set():
             self._poll_once()
             time.sleep(self.poll_interval)

@@ -69,9 +69,9 @@ watchdog-simulator/
 - **Definition of Done:** Automated test passes; manually killing a task thread results in correct STALLED detection within the documented latency formula (SRS P-3).
 
 ### Milestone 3 — Fault Injection (FR-13 to FR-16) (1 day)
-- [ ] Implement `FaultInjector`: CLI function (or simple `input()` loop for now) to inject "hang" and "comm failure" into a named task
-- [ ] Ensure fault injection logs an event (FR-15) and handles double-injection edge case (E-3)
-- [ ] Write `tests/test_fault_injection.py`
+- [x] Implement `FaultInjector`: programmatic interface to inject "hang" and "comm failure" into a named task
+- [x] Ensure fault injection logs an event (FR-15) and handles double-injection edge case (E-3)
+- [x] Write `tests/test_fault_injection.py` and integration tests for task/watchdog behavior
 - **Dependencies:** Milestones 1–2.
 - **Definition of Done:** Can trigger both fault types via a simple script/CLI and see the watchdog correctly detect each.
 
