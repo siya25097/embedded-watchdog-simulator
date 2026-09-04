@@ -92,12 +92,12 @@ watchdog-simulator/
 - **Definition of Done:** A single run's full event history can be printed/exported chronologically.
 
 ### Milestone 6 — Streamlit Dashboard (FR-22 to FR-26) (2–3 days)
-- [ ] **Prototype the threading+Streamlit integration FIRST** (Architecture §5 risk) — get one task's live status rendering and refreshing before building the full layout
-- [ ] Build Task Status Grid (colored badges, last-heartbeat, recovery count)
-- [ ] Build Fault Injection Panel wired to the same `FaultInjector` used by tests
-- [ ] Build Event Log table (reverse-chronological)
-- [ ] Apply color/typography/spacing choices from the UI/UX doc
-- [ ] Handle loading/empty/error states per UI/UX §7
+- [x] **Prototype the threading+Streamlit integration FIRST** (Architecture §5 risk) — get one task's live status rendering and refreshing before building the full layout
+- [x] Build Task Status Grid (colored badges, last-heartbeat, recovery count)
+- [x] Build Fault Injection Panel wired to the same `FaultInjector` used by tests
+- [x] Build Event Log table (reverse-chronological)
+- [x] Apply color/typography/spacing choices from the UI/UX doc
+- [x] Handle loading/empty/error states per UI/UX §7
 - **Dependencies:** Milestones 1–5 (dashboard is a view over already-working logic — don't build it against unfinished core logic).
 - **Definition of Done:** Full demo loop (UI/UX §2 User Journey, steps 1–6) works end-to-end through the dashboard, refreshing live without manual reload.
 
