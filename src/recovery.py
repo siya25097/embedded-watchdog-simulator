@@ -5,10 +5,11 @@ import time
 class RecoveryManager:
     """Restart stalled tasks and track recovery lifecycle events."""
 
-    def __init__(self, task_manager, fault_injector=None, watchdog=None):
+    def __init__(self, task_manager, fault_injector=None, watchdog=None, event_logger=None):
         self.task_manager = task_manager
         self.fault_injector = fault_injector
         self.watchdog = watchdog
+        self.event_logger = event_logger
         self._lock = threading.Lock()
         self._counts = {}
         self._last_recovery = {}
@@ -38,6 +39,8 @@ class RecoveryManager:
                 "task_id": task_id,
                 "event": "RECOVERY_SUCCEEDED",
             })
+            if self.event_logger:
+                self.event_logger.log("RECOVERY_SUCCEEDED", task_id)
             return True
 
     def recover(self, task_id):
@@ -53,6 +56,8 @@ class RecoveryManager:
                 "task_id": task_id,
                 "event": "RECOVERY_ATTEMPTED",
             })
+            if self.event_logger:
+                self.event_logger.log("RECOVERY_ATTEMPTED", task_id, timestamp=timestamp)
 
         try:
             if self.fault_injector:
@@ -65,6 +70,8 @@ class RecoveryManager:
                     "task_id": task_id,
                     "event": "RECOVERY_STARTED",
                 })
+                if self.event_logger:
+                    self.event_logger.log("RECOVERY_STARTED", task_id)
             return True
         except Exception as exc:
             with self._lock:
@@ -74,6 +81,8 @@ class RecoveryManager:
                     "event": "RECOVERY_FAILED",
                     "details": str(exc),
                 })
+                if self.event_logger:
+                    self.event_logger.log("RECOVERY_FAILED", task_id, str(exc))
             return False
         finally:
             with self._lock:

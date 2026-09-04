@@ -6,13 +6,22 @@ class Task(threading.Thread):
 
     This is intentionally minimal for Milestone 1.
     """
-    def __init__(self, task_id, period, registry, work_fn=None, fault_injector=None):
+    def __init__(
+        self,
+        task_id,
+        period,
+        registry,
+        work_fn=None,
+        fault_injector=None,
+        event_logger=None,
+    ):
         super().__init__(daemon=True)
         self.task_id = task_id
         self.period = float(period)
         self.registry = registry
         self.work_fn = work_fn
         self.fault_injector = fault_injector
+        self.event_logger = event_logger
         self._stop_event = threading.Event()
 
     def stop(self):
@@ -33,6 +42,8 @@ class Task(threading.Thread):
             )
             if fault is None:
                 self.registry.heartbeat(self.task_id)
+                if self.event_logger:
+                    self.event_logger.log("HEARTBEAT", self.task_id)
                 print(f"[{self.task_id}] heartbeat at {time.time():.3f}")
             elif fault["fault_type"] == "hang":
                 # A hung task remains alive but stops producing heartbeats.

@@ -6,9 +6,10 @@ from src.task import Task
 class TaskManager:
     """Own the lifecycle of configured task threads."""
 
-    def __init__(self, registry, tasks_config, fault_injector=None):
+    def __init__(self, registry, tasks_config, fault_injector=None, event_logger=None):
         self.registry = registry
         self.fault_injector = fault_injector
+        self.event_logger = event_logger
         self._configs = self._normalize(tasks_config)
         self._tasks = {}
         self._lock = threading.RLock()
@@ -48,6 +49,7 @@ class TaskManager:
                 config["period"],
                 self.registry,
                 fault_injector=self.fault_injector,
+                event_logger=self.event_logger,
             )
             task.start()
             self._tasks[task_id] = task

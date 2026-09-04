@@ -12,11 +12,12 @@ class FaultInjector:
 
     VALID_FAULTS = {"hang", "comm_failure"}
 
-    def __init__(self, task_ids=None):
+    def __init__(self, task_ids=None, event_logger=None):
         self._lock = threading.Lock()
         self.task_ids = set(task_ids or [])
         self.faults = {}
         self.events = []
+        self.event_logger = event_logger
 
     def register_task(self, task_id):
         self.task_ids.add(task_id)
@@ -34,6 +35,13 @@ class FaultInjector:
         }
         with self._lock:
             self.events.append(event)
+        if self.event_logger:
+            self.event_logger.log(
+                "FAULT_INJECTED" if action == "fault_injected" else "FAULT_EVENT",
+                task_id,
+                {"fault_type": fault_type, "action": action},
+                timestamp=event["timestamp"],
+            )
         print(f"[FAULT_INJECTOR] {action} task={task_id} fault={fault_type} at {event['timestamp']:.3f}")
         return event
 

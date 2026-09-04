@@ -21,6 +21,7 @@ class Watchdog(threading.Thread):
         jitter_buffer=0.1,
         on_stalled=None,
         on_healthy=None,
+        event_logger=None,
     ):
         super().__init__(daemon=True)
         self.registry = registry
@@ -29,6 +30,7 @@ class Watchdog(threading.Thread):
         self.jitter_buffer = float(jitter_buffer)
         self.on_stalled = on_stalled
         self.on_healthy = on_healthy
+        self.event_logger = event_logger
         self._stop_event = threading.Event()
         self._lock = threading.Lock()
         self._statuses = {}
@@ -72,6 +74,12 @@ class Watchdog(threading.Thread):
         event = {"task_id": task_id, "event": "STALLED", "timestamp": time.time()}
         with self._lock:
             self._stalled_events.append(event)
+        if self.event_logger:
+            self.event_logger.log(
+                "STALL_DETECTED",
+                task_id,
+                timestamp=event["timestamp"],
+            )
         print(f"[WATCHDOG] {task_id} transitioned to STALLED at {event['timestamp']:.3f}")
 
     def _classify(self, task_id, cfg):

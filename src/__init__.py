@@ -6,4 +6,5 @@ __all__ = [
     "fault_injector",
     "task_manager",
     "recovery",
+    "event_logger",
 ]

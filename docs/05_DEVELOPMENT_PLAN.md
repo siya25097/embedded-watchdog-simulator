@@ -85,8 +85,8 @@ watchdog-simulator/
 - **Definition of Done:** End-to-end: inject fault → see STALLED → see automatic restart → see status return to HEALTHY → recovery count incremented — all observable via logs/tests without the dashboard yet. **This is the core engineering milestone — the project "works" at this point even without a UI.**
 
 ### Milestone 5 — Event Logging (FR-27, optionally FR-28) (½–1 day)
-- [ ] Centralize all event writes (heartbeats optional, faults, stalls, recoveries) into `EventLogger`
-- [ ] Console/file logging via stdlib `logging`
+- [x] Centralize all event writes (heartbeats optional, faults, stalls, recoveries) into `EventLogger`
+- [x] Console/file logging via stdlib `logging`
 - [ ] (Stretch) Persist events to SQLite or JSON-lines
 - **Dependencies:** Milestones 1–4 (this mostly formalizes logging already added along the way).
 - **Definition of Done:** A single run's full event history can be printed/exported chronologically.
