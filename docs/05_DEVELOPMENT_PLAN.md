@@ -76,11 +76,11 @@ watchdog-simulator/
 - **Definition of Done:** Can trigger both fault types via a simple script/CLI and see the watchdog correctly detect each.
 
 ### Milestone 4 — Recovery Mechanism (FR-17 to FR-21) (1–2 days)
-- [ ] Implement `TaskManager.restart_task(task_id)` — cleanly stops and respawns a task thread
-- [ ] Implement `RecoveryManager`: triggered by watchdog on STALLED, calls `TaskManager.restart_task`, tracks recovery count, logs RECOVERY_ATTEMPTED/SUCCEEDED/FAILED
-- [ ] Confirm recovery only counted as "succeeded" once a fresh heartbeat is observed (BR-1)
+- [x] Implement `TaskManager.restart_task(task_id)` — cleanly stops and respawns a task thread
+- [x] Implement `RecoveryManager`: triggered by watchdog on STALLED, calls `TaskManager.restart_task`, tracks recovery count, logs RECOVERY_ATTEMPTED/SUCCEEDED/FAILED
+- [x] Confirm recovery only counted as "succeeded" once a fresh heartbeat is observed (BR-1)
 - [ ] (Stretch) Implement max-recovery-attempts → `FAILED_PERMANENTLY` (FR-21)
-- [ ] Write `tests/test_recovery.py`
+- [x] Write `tests/test_recovery.py`
 - **Dependencies:** Milestones 1–3.
 - **Definition of Done:** End-to-end: inject fault → see STALLED → see automatic restart → see status return to HEALTHY → recovery count incremented — all observable via logs/tests without the dashboard yet. **This is the core engineering milestone — the project "works" at this point even without a UI.**
 

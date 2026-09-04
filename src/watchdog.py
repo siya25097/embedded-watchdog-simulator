@@ -13,12 +13,22 @@ class Watchdog(threading.Thread):
 
     VALID_STATES = {"HEALTHY", "LATE", "STALLED", "RECOVERING", "INITIALIZING"}
 
-    def __init__(self, registry, tasks_config=None, poll_interval=0.25, jitter_buffer=0.1):
+    def __init__(
+        self,
+        registry,
+        tasks_config=None,
+        poll_interval=0.25,
+        jitter_buffer=0.1,
+        on_stalled=None,
+        on_healthy=None,
+    ):
         super().__init__(daemon=True)
         self.registry = registry
         self.tasks_config = self._normalize_tasks(tasks_config or {})
         self.poll_interval = float(poll_interval)
         self.jitter_buffer = float(jitter_buffer)
+        self.on_stalled = on_stalled
+        self.on_healthy = on_healthy
         self._stop_event = threading.Event()
         self._lock = threading.Lock()
         self._statuses = {}
@@ -52,9 +62,16 @@ class Watchdog(threading.Thread):
         with self._lock:
             return list(self._stalled_events)
 
+    def set_status(self, task_id, status):
+        if status not in self.VALID_STATES:
+            raise ValueError(f"Unsupported watchdog status: {status}")
+        with self._lock:
+            self._statuses[task_id] = status
+
     def _log_stalled_transition(self, task_id):
         event = {"task_id": task_id, "event": "STALLED", "timestamp": time.time()}
-        self._stalled_events.append(event)
+        with self._lock:
+            self._stalled_events.append(event)
         print(f"[WATCHDOG] {task_id} transitioned to STALLED at {event['timestamp']:.3f}")
 
     def _classify(self, task_id, cfg):
@@ -100,8 +117,16 @@ class Watchdog(threading.Thread):
             with self._lock:
                 previous = self._statuses.get(task_id)
                 self._statuses[task_id] = new_state
+            if (
+                new_state == "HEALTHY"
+                and previous == "RECOVERING"
+                and self.on_healthy is not None
+            ):
+                self.on_healthy(task_id)
             if new_state == "STALLED" and previous != "STALLED":
                 self._log_stalled_transition(task_id)
+                if self.on_stalled is not None and self.on_stalled(task_id):
+                    self.set_status(task_id, "RECOVERING")
 
     def stop(self):
         self._stop_event.set()
